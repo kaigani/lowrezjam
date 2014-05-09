@@ -5,7 +5,7 @@ window.Game = function Game(){
 	// SETTINGS
 	this.settings = {
 
-		assetPath : 'assets/img/'
+		assetPath : 'assets/img/' , 
 	};
 
 	// PROTECTED
@@ -340,17 +340,24 @@ window.Game = function Game(){
 	//
 
 	this.zoomIn = function(){
-		game.precision = true;
-		game.view.fov /= game.zoom; // magnification
 
-		game.guiLayer.zoom = true;
+		if(!game.precision){
+			// don't zoom multiple times
+			game.precision = true;
+			game.view.fov /= game.zoom; // magnification silly way to do it
+
+			game.guiLayer.zoom = true;
+		}
 	};
 
 	this.zoomOut = function(){
-		game.precision = false;
-		game.view.fov *= game.zoom;
 
-		game.guiLayer.zoom = false;
+		if(game.precision){
+			game.precision = false;
+			game.view.fov *= game.zoom;
+
+			game.guiLayer.zoom = false;
+		}
 	};
 
 	// 

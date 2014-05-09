@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>LowRezJam: Zombie Sniper</title>
+		<title>Unit Tests</title>
 
 		<!-- mobile viewport: -->
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
@@ -16,20 +16,12 @@
 
 		<!-- Core JS methods -->
 		<script src="src/Utilities.js"></script> 
-		<script src="src/Timer.js"></script>
 		<script src="src/Stage.js"></script> 
 		<script src="src/Animation.js"></script> 
-		<script src="src/View.js"></script>
-
-		<script src="src/GuiLayer.js"></script> 
-		<script src="src/TextLayer.js"></script> 
-		<script src="src/SpriteLayer.js"></script> 
-		<script src="src/DamageLayer.js"></script> 
-
+		<script src="src/View.js"></script> 
 		<script src="src/Player.js"></script> 
 		<script src="src/Enemy.js"></script> 
 		<script src="src/Bullet.js"></script> 
-		<script src="src/Obstacle.js"></script> 
 
 		<!-- Game -->
 		<script src="src/Game.js"></script> 
@@ -79,10 +71,9 @@
 				}
 			};
 
-			window.onload = function () {
+			window.onload = function(){
 
 				game = new Game();
-				game.load();
 				//game.start();
 				
 				//canvas = document.getElementById('myCanvas');
@@ -92,15 +83,31 @@
 				//canvas.width = document.body.clientWidth;
 				//canvas.height = document.body.clientHeight;
 
+				window.update = function(){
+					var range = game.view.getRange(game.enemy.distance,game.enemy.width,game.enemy.height);
+					console.log(range);
+					var region = game.view.getClippingRegion(range,game.enemy.direction,game.player.direction,game.player.elevation);
+					if(region){
+						console.log(region);
+						console.log("dx:",region.dx*320);
+						console.log("dy:",region.dy*320);
+						console.log("width:",region.width*320);
+						console.log("height:",region.height*320);
+					}else{
+						console.log("Enemy out of bounds.");
+					}
+				}
+
 				// Debugging gui
 				/*
 				gui = new dat.GUI();
 				var f;
 				gui.add(game,'FPS').listen(); // animation, frames per sec
+				gui.add(window,'update'); // update function
 
 				f = gui.addFolder('camera');
 				f.add(game.view,'focalLength',0,10).step(0.1);
-				f.add(game.view,'fov',0,360).step(1).listen();
+				f.add(game.view,'fov',0,360).step(1);
 				f.add(game.view,'height',0,2).step(0.1);
 				f.add(game.view,'pixelScale',3000,5000).step(1);
 				f.open();
@@ -108,8 +115,8 @@
 				f = gui.addFolder('player');
 				f.add(guiData.player,'direction',0,360).step(1).listen();
 				f.add(guiData.player,'elevation',0,180).step(1).listen();
-				//f.add(game.player.position,'x').step(1).listen();
-				//f.add(game.player.position,'y').step(1).listen();
+				f.add(game.player.position,'x').step(1).listen();
+				f.add(game.player.position,'y').step(1).listen();
 				f.open();
 
 				f = gui.addFolder('enemy');
@@ -130,6 +137,7 @@
 				*/
 
 				// Do preloading here
+/*
 				preloader = game.loader;
 				preloader.addFiles(
 
@@ -143,8 +151,73 @@
 					console.log('All assets loaded.');
 					game.start();
 				});
+*/
+				// TESTS
+				var b = new Bullet(0,45);
+				b.width = b.w;
+				b.height = b.h;
+				game.player.elevation = 45;
+				var p = game.view.getProjection(b); // should be centred
+				console.log("centre:",p);
 
+				game.player.elevation = 31; // this isn't allowed with tilt
+				p = game.view.getProjection(b); // towards top
+				console.log("top:",p);
 
+				game.player.elevation = 59;
+				p = game.view.getProjection(b); // towards bottom
+				console.log("bottom:",p);
+
+				game.player.elevation = 45;
+				game.player.rotate(14);
+				p = game.view.getProjection(b); // towards left
+				console.log("left:",p);
+
+				game.player.rotate(-30);
+				p = game.view.getProjection(b); // towards right
+				console.log("right:",p);
+
+				game.player.elevation = 90;
+				game.player.direction = 0;
+				p = game.view.getProjection(b); // towards right
+				console.log("0, horizon:",p);
+
+				game.player.direction = 45;
+				p = game.view.getProjection(b); // towards right
+				console.log("45, horizon:",p);
+
+				game.player.direction = 90;
+				p = game.view.getProjection(b); // towards right
+				console.log("90, horizon:",p);
+
+				game.player.direction = 135;
+				p = game.view.getProjection(b); // towards right
+				console.log("135, horizon:",p);
+
+				game.player.direction = 180;
+				p = game.view.getProjection(b); // towards right
+				console.log("180, horizon:",p);
+
+				game.player.direction = 225;
+				p = game.view.getProjection(b); // towards right
+				console.log("225, horizon:",p);
+
+				game.player.direction = 270;
+				p = game.view.getProjection(b); // towards right
+				console.log("270, horizon:",p);
+
+				game.player.direction = 315;
+				p = game.view.getProjection(b); // towards right
+				console.log("315, horizon:",p);
+
+				// CHECK COLLISION
+				console.log("\n\nCOLLISIONS\n");
+				var e = new Enemy(game.player);
+				e.distance = 1.8;
+				console.log("Enemy 0.5x2, distance 1.8, direction 0\n")
+				console.log("Check direction 0, elevation 90",game.view.checkCollision(e,0,90,1));
+				console.log("Check direction -15, elevation 90",game.view.checkCollision(e,-15,90,1));
+				console.log("Check direction 180, elevation 90",game.view.checkCollision(e,180,90,1));
 			} 
 		</script>
 

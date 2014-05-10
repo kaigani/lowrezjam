@@ -18,6 +18,8 @@ window.Game = function Game(){
 
 	// Session
 	this.score = 0;
+	this.level = 1;
+	this.enemies = 0;
 
 	// Game core objects
 	this.loader = null;
@@ -32,7 +34,7 @@ window.Game = function Game(){
 	this.guiLayer = null;
 
 	// controls
-	this.mode = 'START'; // TITLE, BEGIN, RUN, END, SCORE
+	this.mode = 'START'; // TITLE, BEGIN, RUN, CLEAR, END, SCORE
 	this.precision = false;
 	this.zoom = 10;
 
@@ -157,7 +159,18 @@ window.Game = function Game(){
 		game.stage.clear();
 
 		game.score = 0;
+		game.level = 1;
+		game.enemies = 0;
 		game.mode = 'START';
+	};
+
+	this.clear = function(){
+
+		game.player.reset();
+		game.stage.clear();
+
+		game.kills = 0; // kills per level
+		startNewGame(); // TODO - separate loading level & starting new game
 	};
 
 
@@ -183,6 +196,10 @@ window.Game = function Game(){
 
 			case 'END':
 				showDeathSequence();
+			break;
+
+			case 'CLEAR':
+				showStageClearSequence();
 			break;
 
 			case 'SCORE':
@@ -257,8 +274,10 @@ window.Game = function Game(){
 
 		game.mode = 'RUN';
 
+		game.enemies = 10*game.level;
+
 		var i;
-		for(i=0;i<100;i++){
+		for(i=0;i<game.enemies;i++){
 			var enemy = new Enemy(game.player);
 			enemy.direction = Math.random()*360;
 			enemy.distance = Math.random()*60 + 20;
@@ -296,7 +315,43 @@ window.Game = function Game(){
 		textLayer.onComplete = function(){
 			console.log("Death sequence complete.");
 			game.reset();
-			game.mode = 'START';
+		};
+	}
+
+	function showStageClearSequence(){
+
+		game.mode += '_running';
+
+		console.log('Show stage clear sequence.');
+
+		var textLayer = new TextLayer(0); // should wait until scroll complete
+		textLayer.small = false;
+		textLayer.dx = 32;
+		textLayer.speed = 10;
+		//textLayer.color = 'rgb(255,0,0)';
+		textLayer.mode = 'SCROLL-LEFT';
+		textLayer.renderText("Clear");
+		game.stage.addObject(textLayer);
+
+		var part = 0;
+		textLayer.onComplete = function(){
+			part++;
+			console.log("Stage clear (part "+part+") complete.");
+
+			if(part === 1){
+
+				game.level++;
+
+				textLayer.reset();
+				textLayer.small = true;
+				textLayer.dy = 15;
+				textLayer.dx = 3;
+				textLayer.mode = 'DEFAULT';
+				textLayer.renderText("Level "+game.level);
+				game.stage.addObject(textLayer);
+			}else{
+				game.clear(); // restart, keeping score stats
+			}
 		};
 	}
 
@@ -387,6 +442,7 @@ window.Game = function Game(){
 
 		console.log(points,"points scored.");
 		game.points += points;
+		game.enemies--;
 
 		var t = new TextLayer();
 		t.mode = 'SCROLL-UP';
@@ -398,6 +454,8 @@ window.Game = function Game(){
 		t.dx = 16-points.toString().length*1.5;
 
 		game.stage.addObject(t);
+
+		if(game.enemies < 1) game.mode = "CLEAR";
 	};
 
 	// zombieAttack

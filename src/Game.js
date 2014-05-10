@@ -5,7 +5,7 @@ window.Game = function Game(){
 	// SETTINGS
 	this.settings = {
 
-		assetPath : 'assets/img/' , 
+		assetPath : 'assets/img/'
 	};
 
 	// PROTECTED

@@ -48,7 +48,7 @@ window.Obstacle = function Obstacle(width,height,distance,direction){
 
 		if(this.sprite){
 			var f = this.sprite;
-			ctx.drawImage(f.asset,f.sx,f.sy,f.sw,f.sh,x,y,w,h);
+			//ctx.drawImage(f.asset,f.sx,f.sy,f.sw,f.sh,x,y,w,h);
 		}
 	};
 

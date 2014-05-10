@@ -88,7 +88,7 @@ var AnimationData = {
 
 	'enemy_ATTACK' : {
 
-		loop : false ,
+		loop : true ,
 		duration : 1.5 ,
 
 		frames : [

@@ -38,7 +38,7 @@ window.Player = function Player(){
 
 		this.mode = 'STOP';
 		this.reloading = false;
-		this.bullets = 6;
+		this.bullets = 10;
 		this.health = 100;
 		this.direction = 0;
 		this.elevation = 90.0;

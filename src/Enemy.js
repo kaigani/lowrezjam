@@ -30,7 +30,7 @@ window.Enemy = function Enemy(player){
 	this.frame = null;
 
 	//var startTime = Date.now();
-	var timer = new Timer();
+	var timer = new Timer(2);
 
 	this.reset = function(){
 
@@ -44,28 +44,42 @@ window.Enemy = function Enemy(player){
 
 	this.update = function(){
 
-		// Update angle between player and enemy
-		//this.angle = angleBetween(polarToCartesian(1,player.direction),polarToCartesian(1,this.direction));
+		// update animation
+		this.frame = game.animation.getFrame('enemy_'+this.mode,timer.elapsed(this.mode));
 
-		//if(stage.count % 100 === 0 && this.distance > 1) this.distance--;
-		if(this.distance > 1){
-			if(this.mode === 'WALK') this.distance -= 0.01; // zombie speed setting TODO
-		}else{
-			this.mode = 'ATTACK'; // change to attack or thrash, etc.
+		switch(this.mode){
+
+			case 'WALK':
+				if(this.distance > 1){
+					if(this.mode === 'WALK') this.distance -= 0.01; // zombie speed setting TODO
+				}else{
+					this.mode = 'ATTACK'; // change to attack or thrash, etc.
+					timer.reset();
+				}
+			break;
+
+			case 'ATTACK':
+				if(timer.finished()){
+					game.zombieAttack();
+					timer.reset();
+				}
+			break;
+			
+			case 'DEATH':
+				if(this.frame === null){
+					game.returnToPool(this);
+				}
+			break;
+
 		}
 
-		//var currentTime = Date.now();
+		// update animation
 		this.frame = game.animation.getFrame('enemy_'+this.mode,timer.elapsed(this.mode));
 
 		// animation has finished
 		if(this.frame === null){
-			
-			if(this.mode === 'DEATH'){
-				game.returnToPool(this);
-			}else if(this.mode === 'ATTACK'){
-				game.zombieAttack(); // attack at the end of an animation run
-				timer.reset();
-			}
+			console.warn("Zombie animation finished.",this.mode);
+			game.returnToPool(this);
 		}
 
 	};
@@ -101,10 +115,11 @@ window.Enemy = function Enemy(player){
 
 		//var hit = enemy.direction-direction; // not a good calculation - doesn't take distance into account
 
-		if(this.mode === "WALK"){
+		if(this.mode !== "DEATH"){
 			console.log("\tI'm shot:",direction,enemy.direction);
 
 			enemy.mode = "DEATH";
+			timer.reset();
 			//startTime = Date.now();
 			//timer.reset(); // mode should auto-reset the timer
 

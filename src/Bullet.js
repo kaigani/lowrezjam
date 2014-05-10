@@ -46,7 +46,7 @@ window.Bullet = function Bullet(shotDirection,shotElevation){
 
 		if(bullet.mode === 'IMPACT'){
 			ctx.fillStyle = 'rgb(255,0,255)';
-			ctx.fillRect(x,y,2,2);
+			//ctx.fillRect(x,y,2,2);
 		}
 		//if(this.image && this.image.complete) ctx.drawImage(this.image,x,y,w,h);
 	};

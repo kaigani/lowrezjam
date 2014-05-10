@@ -12,12 +12,14 @@ window.Game = function Game(){
 	var game = this;
 
 	var objectPool = [];
-
 	var titleLayer = new TextLayer();
 
 	// PUBLIC
 
-	// Game core
+	// Session
+	this.score = 0;
+
+	// Game core objects
 	this.loader = null;
 	this.animation = null;
 	this.stage = null;
@@ -34,7 +36,7 @@ window.Game = function Game(){
 	this.precision = false;
 	this.zoom = 10;
 
-	// properties
+	// game loop 
 	this.count = 0; // running frame count
 	this.FPS = 0;
 
@@ -144,6 +146,20 @@ window.Game = function Game(){
 			console.log("Sprite is done.");
 		};
 	};
+
+	//
+	// GAME 
+	//
+
+	this.reset = function(){
+
+		game.player.reset();
+		game.stage.clear();
+
+		game.score = 0;
+		game.mode = 'START';
+	};
+
 
 	this.update = function(){
 
@@ -279,7 +295,7 @@ window.Game = function Game(){
 		game.stage.addObject(textLayer);
 		textLayer.onComplete = function(){
 			console.log("Death sequence complete.");
-			game.player.reset();
+			game.reset();
 			game.mode = 'START';
 		};
 	}
@@ -311,9 +327,10 @@ window.Game = function Game(){
 			var hitRadius = 0.2;
 			var impact = false;
 
-			// enemies handle whether or not they are hit --- wrong
-			for(var i=0;i<game.stage.objects.length;i++){
+			// Objects determine how to handle shots - shots going through etc.
+			for(var n=game.stage.objects.length;n>0;n--){
 
+				var i = n-1;
 				var object = game.stage.objects[i];
 
 				if(object.shootable && game.view.checkCollision(object,shotDirection,shotElevation,hitRadius)){
@@ -361,8 +378,29 @@ window.Game = function Game(){
 	};
 
 	// 
-	// SHOULD BE EVENTS
+	// EVENTS
 	//
+
+	// scorePoints
+
+	this.scorePoints = function(points){
+
+		console.log(points,"points scored.");
+		game.points += points;
+
+		var t = new TextLayer();
+		t.mode = 'SCROLL-UP';
+		t.overlay = false;
+		t.speed = 10;
+		t.distance = 0; // in front of gui
+		t.renderText(points.toString());
+		t.dy = 16;
+		t.dx = 16-points.toString().length*1.5;
+
+		game.stage.addObject(t);
+	};
+
+	// zombieAttack
 
 	this.zombieAttack = function(){
 
@@ -371,9 +409,9 @@ window.Game = function Game(){
 		console.log("Attack for damage: "+damage);
 		game.player.damage(damage);
 		game.stage.addObject( new DamageLayer() );
-
-		// TODO - flash the gui red
 	};
+
+	// playerDied
 
 	this.playerDied = function(){
 

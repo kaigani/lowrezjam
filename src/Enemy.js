@@ -118,10 +118,11 @@ window.Enemy = function Enemy(player){
 		if(this.mode !== "DEATH"){
 			console.log("\tI'm shot:",direction,enemy.direction);
 
+			game.scorePoints(10); // generic value for now - TODO: headshots
+
+			// Death animation
 			enemy.mode = "DEATH";
-			timer.reset();
-			//startTime = Date.now();
-			//timer.reset(); // mode should auto-reset the timer
+			//timer.reset();
 
 			return true; // stop the bullet
 		}

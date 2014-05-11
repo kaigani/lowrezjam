@@ -20,6 +20,7 @@ window.Game = function Game(){
 	this.score = 0;
 	this.level = 1;
 	this.enemies = 0;
+	this.multiplier = 1; // increment with each hit
 
 	// Game core objects
 	this.loader = null;
@@ -161,6 +162,7 @@ window.Game = function Game(){
 		game.score = 0;
 		game.level = 1;
 		game.enemies = 0;
+		game.multiplier = 1;
 		game.mode = 'START';
 	};
 
@@ -170,6 +172,7 @@ window.Game = function Game(){
 		game.stage.clear();
 
 		game.kills = 0; // kills per level
+		game.multiplier = 1; // reset each level
 		startNewGame(); // TODO - separate loading level & starting new game
 	};
 
@@ -391,7 +394,14 @@ window.Game = function Game(){
 				if(object.shootable && game.view.checkCollision(object,shotDirection,shotElevation,hitRadius)){
 					console.log("Object",object.constructor.name,"[",object.id,"] hit");
 					impact = object.shot(shotDirection,shotElevation); // for precision
-					if(impact) break; // impacted
+					if(impact){
+						if(object.constructor.name === 'Enemy'){
+							game.multiplier++; // increase multiplier for next shot with each enemy hit
+						}else{
+							game.multiplier = 1;
+						}
+						break; // impacted
+					}
 				}
 			}
 
@@ -399,6 +409,8 @@ window.Game = function Game(){
 				console.log('Miss!');
 				var bullet = new Bullet(shotDirection,shotElevation);
 				game.stage.addObject(bullet);
+
+				game.multiplier = 1;
 			}
 
 		}else{
@@ -439,6 +451,8 @@ window.Game = function Game(){
 	// scorePoints
 
 	this.scorePoints = function(points){
+
+		points = points * game.multiplier; // TODO - enemy shouldn't be assigning point values
 
 		console.log(points,"points scored.");
 		game.points += points;

@@ -75,7 +75,9 @@ window.Player = function Player(){
 				player.bullets = 10;
 				player.reloading = false;
 			}else{
+				var bulletsBefore = player.bullets;
 				player.bullets = Math.floor( 10 * reloadTimer.elapsed()/3 );
+				if(bulletsBefore != player.bullets) game.audio.play('reload');
 			}
 		}
 	};

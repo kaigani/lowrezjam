@@ -48,20 +48,37 @@ window.Game = function Game(){
 	this.load = function(){
 
 		// Functional classes
-		this.loader = new html5Preloader();
-		this.animation = new Animation(this.loader);
+		game.loader = new html5Preloader();
+
+		// Doesn't preload
+		game.audio = new AudioHandler();
+		game.audio.add('reload','assets/snd/reload.mp3');
+		game.audio.add('shot','assets/snd/shot.mp3');
+		game.audio.add('soundtrack','assets/snd/soundtrack.mp3');
+		game.audio.add('title','assets/snd/title.mp3');
+		game.audio.add('zombie-bite','assets/snd/zombie-bite.mp3');
+		game.audio.add('zombie-death','assets/snd/zombie-death.mp3');
+		game.audio.add('player-death','assets/snd/player-death.mp3');
+
+		// start the soundtrack
+		game.audio.play('soundtrack',true);
+
+		
+		// Load animation & assets
+		game.animation = new Animation(game.loader);
 
 		// Initialise stage & game objects
-		this.stage = new Stage(320,320);
-		this.view = new View();
+		game.stage = new Stage(320,320);
+		game.view = new View();
 
-		this.guiLayer = new GuiLayer();
+		game.guiLayer = new GuiLayer();
 
-		this.player = new Player();
+		game.player = new Player();
 		//stage.addObject(player); // don't need on the stage - player will not be drawn
 
 		// TODO - REMOVE GAME SETUP - now in startNewGame()
-		this.enemy = new Enemy(game.player);
+		game.enemy = new Enemy(game.player);
+
 
 	};
 
@@ -230,6 +247,7 @@ window.Game = function Game(){
 
 		game.mode = 'TITLE';
 		console.log('Start title sequence.');
+		game.audio.play('title');
 
 		titleLayer = new TextLayer(3); // a hack on TextLayer
 		titleLayer.sprite = game.animation.getSprite('titleCard');
@@ -317,7 +335,13 @@ window.Game = function Game(){
 		game.stage.addObject(textLayer);
 		textLayer.onComplete = function(){
 			console.log("Death sequence complete.");
-			game.reset();
+			textLayer.reset();
+			textLayer.renderText("Score "+game.score);
+			textLayer.dx = 32;
+			game.stage.addObject(textLayer);
+			textLayer.onComplete = function(){
+				game.reset();
+			};
 		};
 	}
 
@@ -372,6 +396,7 @@ window.Game = function Game(){
 			console.log("Shot taken!");
 
 			game.guiLayer.shoot();
+			game.audio.play('shot');
 
 			// determine shot angle direction & elevation with slight random offset within 1 degree
 			var randomX = Math.random() - 0.5;
@@ -457,6 +482,7 @@ window.Game = function Game(){
 		console.log(points,"points scored.");
 		game.points += points;
 		game.enemies--;
+		//game.audio.play('zombie-death'); // odd to put it here - doesn't sound right
 
 		var t = new TextLayer();
 		t.mode = 'SCROLL-UP';
@@ -481,6 +507,7 @@ window.Game = function Game(){
 		console.log("Attack for damage: "+damage);
 		game.player.damage(damage);
 		game.stage.addObject( new DamageLayer() );
+		game.audio.play('zombie-bite');
 	};
 
 	// playerDied
@@ -488,6 +515,7 @@ window.Game = function Game(){
 	this.playerDied = function(){
 
 		if(game.mode === 'RUN') game.mode = 'END';
+		game.audio.play('player-death');
 	};
 
 

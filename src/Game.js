@@ -380,6 +380,17 @@ window.Game = function Game(){
 				game.clear(); // restart, keeping score stats
 			}
 		};
+
+		// Add a point score scroll layer
+		var scoreLayer = new TextLayer(0);
+		scoreLayer.small = true;
+		scoreLayer.dx = 32;
+		scoreLayer.dy = 24;
+		scoreLayer.speed = 5;
+		scoreLayer.color = 'rgb(255,255,255)';
+		scoreLayer.mode = 'SCROLL-LEFT';
+		scoreLayer.renderText('score '+game.score);
+		game.stage.addObject(scoreLayer);
 	}
 
 
@@ -604,6 +615,12 @@ window.Game = function Game(){
 			// Default
 			default:
 				//console.log('Player: Keycode: '+e.keyCode);
+		}
+
+		// Stop scrolling the page
+		if(e.keyCode == 32 && e.target == document.body) {
+			e.preventDefault();
+			return false;
 		}
 	}
 

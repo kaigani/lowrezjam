@@ -359,29 +359,18 @@ window.Game = function Game(){
 
 		console.log('Show stage clear sequence.');
 
-		var textLayer = new TextLayer(0); // should wait until scroll complete
+		var textLayer = new TextLayer(5); // should wait until scroll complete
 		textLayer.small = false;
 		textLayer.dx = 32;
 		textLayer.speed = 10;
 		//textLayer.color = 'rgb(255,0,0)';
+		//textLayer.overlay = false;
 		textLayer.mode = 'SCROLL-LEFT';
 		textLayer.renderText("Clear");
 		game.stage.addObject(textLayer);
 
-		// Add a point score scroll layer
-		var scoreLayer = new TextLayer(0);
-		scoreLayer.small = true;
-		scoreLayer.dx = 32;
-		scoreLayer.dy = 26;
-		scoreLayer.speed = 5;
-		scoreLayer.color = 'rgb(255,255,255)';
-		scoreLayer.overlay = false;
-		scoreLayer.mode = 'SCROLL-LEFT';
-		scoreLayer.renderText('score '+game.score);
-		game.stage.addObject(scoreLayer);
-
 		var part = 0;
-		scoreLayer.onComplete = function(){
+		textLayer.onComplete = function(){
 			part++;
 			console.log("Stage clear (part "+part+") complete.");
 
@@ -401,6 +390,18 @@ window.Game = function Game(){
 			}
 		};
 
+		// Add a point score scroll layer
+		var scoreLayer = new TextLayer(0);
+		scoreLayer.small = true;
+		scoreLayer.dx = 32;
+		scoreLayer.dy = 26;
+		scoreLayer.speed = 6;
+		scoreLayer.distance = -100; // top layer
+		scoreLayer.color = 'rgb(255,255,255)';
+		scoreLayer.overlay = false;
+		scoreLayer.mode = 'SCROLL-LEFT';
+		scoreLayer.renderText('score '+game.score);
+		game.stage.addObject(scoreLayer);
 	}
 
 

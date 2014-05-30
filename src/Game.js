@@ -333,16 +333,24 @@ window.Game = function Game(){
 		textLayer.mode = 'SCROLL-LEFT';
 
 		game.stage.addObject(textLayer);
-		textLayer.onComplete = function(){
-			console.log("Death sequence complete.");
-			textLayer.reset();
-			textLayer.renderText("Score "+game.score);
-			textLayer.dx = 32;
-			game.stage.addObject(textLayer);
-			textLayer.onComplete = function(){
-				game.reset();
-			};
+	
+		// Add a point score scroll layer
+		var scoreLayer = new TextLayer(0);
+		scoreLayer.small = true;
+		scoreLayer.dx = 32;
+		scoreLayer.dy = 26;
+		scoreLayer.speed = 5;
+		scoreLayer.color = 'rgb(255,255,255)';
+		scoreLayer.overlay = false;
+		scoreLayer.mode = 'SCROLL-LEFT';
+		scoreLayer.renderText('score '+game.score);
+		
+		game.stage.addObject(scoreLayer);
+
+		scoreLayer.onComplete = function(){
+			game.reset();
 		};
+
 	}
 
 	function showStageClearSequence(){
@@ -385,9 +393,10 @@ window.Game = function Game(){
 		var scoreLayer = new TextLayer(0);
 		scoreLayer.small = true;
 		scoreLayer.dx = 32;
-		scoreLayer.dy = 24;
+		scoreLayer.dy = 26;
 		scoreLayer.speed = 5;
 		scoreLayer.color = 'rgb(255,255,255)';
+		scoreLayer.overlay = false;
 		scoreLayer.mode = 'SCROLL-LEFT';
 		scoreLayer.renderText('score '+game.score);
 		game.stage.addObject(scoreLayer);
@@ -491,7 +500,7 @@ window.Game = function Game(){
 		points = points * game.multiplier; // TODO - enemy shouldn't be assigning point values
 
 		console.log(points,"points scored.");
-		game.points += points;
+		game.score += points;
 		game.enemies--;
 		//game.audio.play('zombie-death'); // odd to put it here - doesn't sound right
 

@@ -37,8 +37,8 @@ window.Stage = function Stage(width,height){
 	ui2Image.src = 'assets/img/ui_precision.png';
 
 	var image = new Image();
-	image.src = 'assets/img/zombie.png';
-	image.onload = function(){
+	//image.src = 'assets/img/zombie.png';
+	//image.onload = function(){
 
 /*
 		miniCtx.fillStyle = 'rgb(128,128,128)';
@@ -55,7 +55,7 @@ window.Stage = function Stage(width,height){
 		bigData = scaleImageData(imageData,10);
 */
 
-	};
+	//};
 
 	// Stage objects - each should be able to draw itself
 	this.objects = []; // make public

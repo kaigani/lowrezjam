@@ -150,8 +150,6 @@ var AnimationAssets = {
 	"enemy_WALK-03" : { "src":"zombieAtlas.png", "sx":200, "sy":0, "sw":200, "sh":540 } ,
 	"enemy_WALK-04" : { "src":"zombieAtlas.png", "sx":0, "sy":0, "sw":200, "sh":540 } ,
 
-	"obstacle_FACE" : { "src":"hires.jpg", "sx":0, "sy":0, "sw":300, "sh":300 } ,
-
 	"gui_DEFAULT"	: { "src":"gui_DEFAULT.png", "sx":0, "sy":0, "sw":32, "sh":32 } ,
 	"gui_SHOOT"		: { "src":"gui_SHOOT.png", "sx":0, "sy":0, "sw":32, "sh":32 } ,
 	"gui_ZOOM"		: { "src":"gui_ZOOM.png", "sx":0, "sy":0, "sw":32, "sh":32 } ,

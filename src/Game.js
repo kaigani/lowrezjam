@@ -344,7 +344,7 @@ window.Game = function Game(){
 		scoreLayer.overlay = false;
 		scoreLayer.mode = 'SCROLL-LEFT';
 		scoreLayer.renderText('score '+game.score);
-		
+
 		game.stage.addObject(scoreLayer);
 
 		scoreLayer.onComplete = function(){
@@ -368,8 +368,20 @@ window.Game = function Game(){
 		textLayer.renderText("Clear");
 		game.stage.addObject(textLayer);
 
+		// Add a point score scroll layer
+		var scoreLayer = new TextLayer(0);
+		scoreLayer.small = true;
+		scoreLayer.dx = 32;
+		scoreLayer.dy = 26;
+		scoreLayer.speed = 5;
+		scoreLayer.color = 'rgb(255,255,255)';
+		scoreLayer.overlay = false;
+		scoreLayer.mode = 'SCROLL-LEFT';
+		scoreLayer.renderText('score '+game.score);
+		game.stage.addObject(scoreLayer);
+
 		var part = 0;
-		textLayer.onComplete = function(){
+		scoreLayer.onComplete = function(){
 			part++;
 			console.log("Stage clear (part "+part+") complete.");
 
@@ -389,17 +401,6 @@ window.Game = function Game(){
 			}
 		};
 
-		// Add a point score scroll layer
-		var scoreLayer = new TextLayer(0);
-		scoreLayer.small = true;
-		scoreLayer.dx = 32;
-		scoreLayer.dy = 26;
-		scoreLayer.speed = 5;
-		scoreLayer.color = 'rgb(255,255,255)';
-		scoreLayer.overlay = false;
-		scoreLayer.mode = 'SCROLL-LEFT';
-		scoreLayer.renderText('score '+game.score);
-		game.stage.addObject(scoreLayer);
 	}
 
 

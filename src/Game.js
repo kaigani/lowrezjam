@@ -631,10 +631,10 @@ window.Game = function Game(){
 		}
 
 		// Stop scrolling the page
-		if(e.keyCode == 32 && e.target == document.body) {
-			e.preventDefault();
-			return false;
-		}
+		//if(e.keyCode == 32 && e.target == document.body) {
+		e.preventDefault();
+		return false;
+		//}
 	}
 
 	function handleKeyUp(e){

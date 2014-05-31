@@ -1,6 +1,6 @@
 window.Game = function Game(){
 
-	console.log('Zombie Sniper - version 1.1');
+	console.log('Zombie Sniper - version 1.2');
 
 	console.log('New game.');
 
